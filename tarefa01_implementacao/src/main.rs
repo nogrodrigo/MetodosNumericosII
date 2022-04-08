@@ -11,7 +11,7 @@ use bmp::BMPImage;
 
 fn main() {
     // Alg1.
-    let old_img_content = utils::get_file("src/imgs/borboleta_902x526.bmp");
+    let old_img_content = utils::get_file("./imgs/borboleta_902x526.bmp");
     let mut image = BMPImage::new(902, 526);
     image.bmp_insert_img_data(&old_img_content[54..]);
 
@@ -21,7 +21,7 @@ fn main() {
     let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
     let m_gauss_linear = matrix_utils::flatenning(&m);
     image.bmp_insert_img_data(&m_gauss_linear);
-    image.write_file("src/imgs/test_gauss.bmp").unwrap();
+    image.write_file("./imgs/test_gauss.bmp").unwrap();
 
     let m = image.bmp_matrix_with_zeros_edges(1);
 
@@ -30,18 +30,18 @@ fn main() {
     let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
     let a_linear = matrix_utils::flatenning(&a_pixels);
     image.bmp_insert_img_data(&a_linear);
-    image.write_file("src/imgs/testy.bmp").unwrap();
+    image.write_file("./imgs/testy.bmp").unwrap();
 
     // Aplicando Sobel na direção X na matriz/imagem M, usando threshold de 255.0 / 2.
     let b = conv_sobel::conv_2d_sobel(&m, 3, 'x', image.bmp_image_padding());
     let b_pixels = matrix_utils::from_pixel_matrix_to_matrix(&b, image.bmp_image_padding());
     let b_linear = matrix_utils::flatenning(&b_pixels);
     image.bmp_insert_img_data(&b_linear);
-    image.write_file("src/imgs/testx.bmp").unwrap();
+    image.write_file("./imgs/testx.bmp").unwrap();
 
     // Somando as duas matrizes usando => |G| = sqrt(Ay^(2) + Bx^(2)), e G = G / max(G) * 255.
     let d = conv_sobel::sobel_magnitude(&a_pixels, &b_pixels);
     let d_linear = matrix_utils::flatenning(&d);
     image.bmp_insert_img_data(&d_linear);
-    image.write_file("src/imgs/test_full.bmp").unwrap();
+    image.write_file("./imgs/test_full.bmp").unwrap();
 }
