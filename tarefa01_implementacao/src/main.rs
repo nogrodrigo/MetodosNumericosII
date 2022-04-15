@@ -1,20 +1,24 @@
 mod bmp;
 mod conv_gauss;
-mod conv_sobel;
 mod conv_laplace;
+mod conv_sobel;
 mod gaussian;
+mod laplace;
 mod matrix_utils;
 mod sobel;
-mod laplace;
 mod utils;
 use bmp::BMPImage;
 
 // TODO: so funciona para imagens de dimensões pares.
 
 fn main() {
+    let image_width = 1200;
+    let image_height = 630;
+    let image_name = "sonic_1200x630";
+
     // Alg1.
-    let old_img_content = utils::get_file("src/imgs/sonic_1200x630.bmp");
-    let mut image = BMPImage::new(1200, 630);
+    let old_img_content = utils::get_file(format!("src/imgs/{}.bmp", image_name).as_str());
+    let mut image = BMPImage::new(image_width, image_height);
     image.bmp_insert_img_data(&old_img_content[54..]);
 
     let m = image.bmp_matrix_with_zeros_edges();
@@ -24,7 +28,9 @@ fn main() {
     let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
     let m_gauss_linear = matrix_utils::flatenning(&m);
     image.bmp_insert_img_data(&m_gauss_linear);
-    image.write_file("src/imgs/test_sonic_gauss.bmp").unwrap();
+    image
+        .write_file(format!("src/imgs/{}_gauss.bmp", image_name).as_str())
+        .unwrap();
 
     let m = image.bmp_matrix_with_zeros_edges();
     println!("Aplicando o filtro de Sobel no eixo Y.");
@@ -33,7 +39,9 @@ fn main() {
     let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
     let a_linear = matrix_utils::flatenning(&a_pixels);
     image.bmp_insert_img_data(&a_linear);
-    image.write_file("src/imgs/test_sonic_sobel_y.bmp").unwrap();
+    image
+        .write_file(format!("src/imgs/{}_sobel_y.bmp", image_name).as_str())
+        .unwrap();
 
     println!("Aplicando o filtro de Sobel no eixo X.");
     // Aplicando Sobel na direção X na matriz/imagem M, usando threshold de 255.0 / 2.
@@ -41,15 +49,18 @@ fn main() {
     let b_pixels = matrix_utils::from_pixel_matrix_to_matrix(&b, image.bmp_image_padding());
     let b_linear = matrix_utils::flatenning(&b_pixels);
     image.bmp_insert_img_data(&b_linear);
-    image.write_file("src/imgs/test_sonic_sobel_x.bmp").unwrap();
+    image
+        .write_file(format!("src/imgs/{}_sobel_x.bmp", image_name).as_str())
+        .unwrap();
 
     println!("Somando Sobel X e Y.");
     // Somando as duas matrizes usando => |G| = sqrt(Ay^(2) + Bx^(2)), e G = G / max(G) * 255.
     let d = conv_sobel::sobel_magnitude(&a_pixels, &b_pixels);
     let d_linear = matrix_utils::flatenning(&d);
     image.bmp_insert_img_data(&d_linear);
-    image.write_file("src/imgs/test_sonic_xy.bmp").unwrap();
-
+    image
+        .write_file(format!("src/imgs/{}_sobel_completo.bmp", image_name).as_str())
+        .unwrap();
 
     // Alg2.
     let m = image.bmp_matrix_with_zeros_edges();
@@ -59,7 +70,9 @@ fn main() {
     let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
     let m_gauss_linear = matrix_utils::flatenning(&m);
     image.bmp_insert_img_data(&m_gauss_linear);
-    image.write_file("./src/imgs/test_sonic_gauss.bmp").unwrap();
+    image
+        .write_file(format!("src/imgs/{}_gauss.bmp", image_name).as_str())
+        .unwrap();
 
     let m = image.bmp_matrix_with_zeros_edges();
 
@@ -68,5 +81,7 @@ fn main() {
     let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
     let a_linear = matrix_utils::flatenning(&a_pixels);
     image.bmp_insert_img_data(&a_linear);
-    image.write_file("./src/imgs/test_sonic_laplace.bmp").unwrap();
+    image
+        .write_file(format!("src/imgs/{}_laplace.bmp", image_name).as_str())
+        .unwrap();
 }
