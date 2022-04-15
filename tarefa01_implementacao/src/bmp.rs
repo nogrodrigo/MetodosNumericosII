@@ -108,24 +108,28 @@ impl BMPImage {
     }
 
     /// Retorna uma matriz com bordas de zeros.
-    pub fn bmp_matrix_with_zeros_edges(&self, border_size: usize) -> Vec<Vec<u8>> {
+    pub fn bmp_matrix_with_zeros_edges(&self) -> Vec<Vec<u8>> {
+        let mut out = Vec::new();
         let mut line_idx = 0;
-        let mut out: Vec<Vec<u8>> = (0..self.image_height)
-            .map(|_| {
-                let mut line = Vec::new();
 
-                while line_idx < self.image_data.len() && line.len() != self.bmp_image_width() {
-                    line.push(self.image_data[line_idx]);
-                    line_idx += 1;
+
+        while line_idx < self.image_data.len() {
+            let mut line = Vec::new();
+            while line.len() < self.bmp_image_width() {
+                line.push(self.image_data[line_idx]);
+                line_idx += 1;
+
+                if line_idx + 1 > self.image_data.len() {
+                    break;
                 }
-                line.insert(0, 0);
-                line.push(0);
-                line
-            })
-            .collect();
+            }
+            line.push(0);
+            line.insert(0, 0);
+            out.push(line);
+        }
 
-        out.insert(0, vec![0; self.bmp_image_width() + (border_size + 1)]);
-        out.push(vec![0; self.bmp_image_width() + (border_size + 1)]);
+        out.insert(0, vec![0; self.bmp_image_width()]);
+        out.push(vec![0; self.bmp_image_width()]);
 
         out
     }

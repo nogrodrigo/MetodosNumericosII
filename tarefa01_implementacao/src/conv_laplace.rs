@@ -1,7 +1,7 @@
 use crate::laplace;
 use crate::matrix_utils;
 
-pub fn conv_2d_laplace(matrix: &Vec<Vec<u8>>, e: f64, padding: usize) -> Vec<Vec<(u8, u8, u8)>> {
+pub fn conv_2d_laplace(matrix: &Vec<Vec<u8>>, _e: f64, padding: usize) -> Vec<Vec<(u8, u8, u8)>> {
     let m_pixels = matrix_utils::make_pixel_matrix(matrix, padding);
     let kernel = laplace::laplace();
 
