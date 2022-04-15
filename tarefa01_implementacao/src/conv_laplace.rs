@@ -47,7 +47,7 @@ pub fn conv_2d_laplace(matrix: &Vec<Vec<u8>>, _e: f64, padding: usize) -> Vec<Ve
                 + center.1 as f64 * kernel[1][1]
                 + center.2 as f64 * kernel[1][1];
 
-        /*     let new_pixel_value = new_pixel * 1.0 / e.powf(2.0);
+            /*     let new_pixel_value = new_pixel * 1.0 / e.powf(2.0);
 
             if new_pixel_value != 0.0 {
                 line.push((0, 0, 0));
@@ -55,7 +55,7 @@ pub fn conv_2d_laplace(matrix: &Vec<Vec<u8>>, _e: f64, padding: usize) -> Vec<Ve
                 line.push((0xFF, 0xFF, 0xFF));
             } */
 
-            line.push((new_pixel as u8,new_pixel as u8,new_pixel as u8))
+            line.push((new_pixel as u8, new_pixel as u8, new_pixel as u8))
         }
         out.push(line);
     }

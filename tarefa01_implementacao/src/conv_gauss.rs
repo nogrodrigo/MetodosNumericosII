@@ -1,14 +1,9 @@
-use crate::matrix_utils;
 use crate::gaussian;
+use crate::matrix_utils;
 
-pub fn conv_2d_gauss(
-    matrix: &Vec<Vec<u8>>,
-    kernel_size: usize,
-    sigma: f64,
-    padding: usize,
-) -> Vec<Vec<(u8, u8, u8)>> {
+pub fn conv_2d_gauss(matrix: &Vec<Vec<u8>>, sigma: f64, padding: usize) -> Vec<Vec<(u8, u8, u8)>> {
     let m_pixels = matrix_utils::make_pixel_matrix(matrix, padding);
-    let kernel = gaussian::gaussian(kernel_size, sigma);
+    let kernel = gaussian::gaussian(3, sigma);
 
     let mut out = Vec::new();
     for i in 1..(m_pixels.len() - 1) {

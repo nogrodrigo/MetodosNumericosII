@@ -1,4 +1,4 @@
-pub fn sobel(_kernel_size: usize, direction: char) -> Vec<Vec<f64>> {
+pub fn sobel(direction: char) -> Vec<Vec<f64>> {
     let x_sobel_filter = vec![
         vec![-1.0, 0.0, 1.0],
         vec![-2.0, 0.0, 2.0],

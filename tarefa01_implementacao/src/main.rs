@@ -20,7 +20,7 @@ fn main() {
     let m = image.bmp_matrix_with_zeros_edges();
     println!("Aplicando o filtro de Gauss.");
     // Aplicando o filtro Gaussiano na matriz/imagem M.
-    let m_gauss = conv_gauss::conv_2d_gauss(&m, 3, 1.0, image.bmp_image_padding());
+    let m_gauss = conv_gauss::conv_2d_gauss(&m, 1.0, image.bmp_image_padding());
     let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
     let m_gauss_linear = matrix_utils::flatenning(&m);
     image.bmp_insert_img_data(&m_gauss_linear);
@@ -29,7 +29,7 @@ fn main() {
     let m = image.bmp_matrix_with_zeros_edges();
     println!("Aplicando o filtro de Sobel no eixo Y.");
     // Aplicando Sobel na direção Y na matriz/imagem M, usando threshold de 255.0 / 2.
-    let a = conv_sobel::conv_2d_sobel(&m, 3, 'y', image.bmp_image_padding());
+    let a = conv_sobel::conv_2d_sobel(&m, 'y', image.bmp_image_padding(), 255.0 / 2.0);
     let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
     let a_linear = matrix_utils::flatenning(&a_pixels);
     image.bmp_insert_img_data(&a_linear);
@@ -37,7 +37,7 @@ fn main() {
 
     println!("Aplicando o filtro de Sobel no eixo X.");
     // Aplicando Sobel na direção X na matriz/imagem M, usando threshold de 255.0 / 2.
-    let b = conv_sobel::conv_2d_sobel(&m, 3, 'x', image.bmp_image_padding());
+    let b = conv_sobel::conv_2d_sobel(&m, 'x', image.bmp_image_padding(), 255.0 / 2.0);
     let b_pixels = matrix_utils::from_pixel_matrix_to_matrix(&b, image.bmp_image_padding());
     let b_linear = matrix_utils::flatenning(&b_pixels);
     image.bmp_insert_img_data(&b_linear);
@@ -55,7 +55,7 @@ fn main() {
     let m = image.bmp_matrix_with_zeros_edges();
     println!("Aplicando o filtro de Gauss.");
     // Aplicando o filtro Gaussiano na matriz/imagem M.
-    let m_gauss = conv_gauss::conv_2d_gauss(&m, 3, 1.6, image.bmp_image_padding());
+    let m_gauss = conv_gauss::conv_2d_gauss(&m, 1.6, image.bmp_image_padding());
     let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
     let m_gauss_linear = matrix_utils::flatenning(&m);
     image.bmp_insert_img_data(&m_gauss_linear);

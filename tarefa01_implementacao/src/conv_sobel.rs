@@ -1,12 +1,10 @@
 use crate::matrix_utils;
 use crate::sobel;
 
-pub fn conv_2d_sobel(matrix: &Vec<Vec<u8>>, kernel_size: usize, direction: char, padding: usize) -> Vec<Vec<(u8, u8, u8)>> {
+pub fn conv_2d_sobel(matrix: &Vec<Vec<u8>>, direction: char, padding: usize, threshold: f64) -> Vec<Vec<(u8, u8, u8)>> {
     let m_pixels = matrix_utils::make_pixel_matrix(matrix, padding);
 
-    let threshold = 255.0 / 2.0;
-
-    let kernel = sobel::sobel(kernel_size, direction);
+    let kernel = sobel::sobel(direction);
 
 
     let mut out = Vec::new();
