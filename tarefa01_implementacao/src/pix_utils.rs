@@ -13,7 +13,7 @@ pub fn add_padding(m_pixels: &Vec<Vec<Pixel>>) -> Vec<Vec<Pixel>> {
     out.push(vec![Pixel::RGB(0, 0, 0); width]);
     out
 }
-
+ 
 pub fn from_mat_pix_to_vec(m_pixels: &Vec<Vec<Pixel>>) -> Vec<u8> {
     let mut out = Vec::new();
     for line in m_pixels.iter() {

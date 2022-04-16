@@ -15,10 +15,10 @@ mod laplace_filter;
 
 use ppm_reader::PPMReader;
 
-// TODO: Run sobel x, sobel y and laplace in threads.
+use std::sync::{Arc, Mutex};
 
 fn main() -> Result<(), std::io::Error> {
-    let image_name = "3840_2160";
+    let image_name = "21x21";
 
     println!("Lendo arquivo: ");
     let file_content = utils::read_file(format!("./src/imgs/{}.ppm", image_name).as_str())?;
@@ -34,28 +34,56 @@ fn main() -> Result<(), std::io::Error> {
     ppm_image.image_data = gauss.clone();
     ppm_image.save(format!("./src/imgs/gauss_{}.ppm", image_name).as_str())?;
 
-    let pixels_with_padding = pix_utils::add_padding(&gauss);
+    let gauss_with_padding_arc = Arc::new(Mutex::new(pix_utils::add_padding(&gauss)));
+    let gauss_with_padding_arc_for_sobel_y = Arc::clone(&gauss_with_padding_arc);
+    let gauss_with_padding_arc_for_sobel_x = Arc::clone(&gauss_with_padding_arc);
+    let gauss_with_padding_arc_for_laplace = Arc::clone(&gauss_with_padding_arc);
 
-    println!("Aplicando Sobel Y na imagem: ");
-    let sobel_y = conv_sobel::conv_sobel(&pixels_with_padding, 'y', 255.0 / 2.0);
+    let sobel_x = std::thread::spawn(move || {
+        println!("Aplicando Sobel X na imagem: ");
+        conv_sobel::conv_sobel(
+            &gauss_with_padding_arc_for_sobel_x.lock().unwrap(),
+            'x',
+            255.0 / 2.0,
+        )
+    });
+
+    let sobel_y = std::thread::spawn(move || {
+        println!("Aplicando Sobel Y na imagem: ");
+        conv_sobel::conv_sobel(
+            &gauss_with_padding_arc_for_sobel_y.lock().unwrap(),
+            'y',
+            255.0 / 2.0,
+        )
+    });
+
+    let sobel_x = sobel_x.join().unwrap();
+    let sobel_y = sobel_y.join().unwrap();
+
     ppm_image.image_data = sobel_y.clone();
     ppm_image.save(format!("./src/imgs/sobel_y_{}.ppm", image_name).as_str())?;
 
-    println!("Aplicando Sobel X na imagem: ");
-    let sobel_x = conv_sobel::conv_sobel(&pixels_with_padding, 'x', 255.0 / 2.0);
     ppm_image.image_data = sobel_x.clone();
     ppm_image.save(format!("./src/imgs/sobel_x_{}.ppm", image_name).as_str())?;
 
-    println!("Aplicando Sobel X+Y na imagem: ");
-    let sobel = conv_sobel::sobel_magnitude(&sobel_x, &sobel_y);
-    ppm_image.image_data = sobel;
+    let sobel_x_y = std::thread::spawn(move || {
+        println!("Aplicando Sobel X+Y na imagem: ");
+        conv_sobel::sobel_magnitude(&sobel_x, &sobel_y)
+    });
+
+    let laplace = std::thread::spawn(move || {
+        println!("Aplicando Laplace na imagem: ");
+        conv_laplace::conv_laplace(
+            &gauss_with_padding_arc_for_laplace.lock().unwrap(),
+            0.00001,
+            1.0,
+        )
+    });
+
+    ppm_image.image_data = sobel_x_y.join().unwrap();
     ppm_image.save(format!("./src/imgs/sobel_{}.ppm", image_name).as_str())?;
 
-    let pixels_with_padding = pix_utils::add_padding(&gauss);
-
-    println!("Aplicando Laplace na imagem: ");
-    let laplace = conv_laplace::conv_laplace(&pixels_with_padding, 0.00001, 1.0);
-    ppm_image.image_data = laplace;
+    ppm_image.image_data = laplace.join().unwrap();
     ppm_image.save(format!("./src/imgs/laplace_{}.ppm", image_name).as_str())?;
 
     Ok(())
