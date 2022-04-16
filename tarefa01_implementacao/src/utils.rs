@@ -1,15 +1,8 @@
-use std::fs::File;
-use std::io::{Read};
+use std::io::Read;
 
-pub fn get_file(path: &str) -> Vec<u8> {
+pub fn read_file(path: &str) -> Result<Vec<u8>, std::io::Error> {
+    let mut file = std::fs::File::open(path)?;
     let mut buffer = Vec::new();
-    let mut file = match File::open(path) {
-        Ok(file) => file,
-        Err(error) => panic!("Erro ao abrir arquivo {}! Erro: {}", path, error),
-    };
-
-    file.read_to_end(&mut buffer)
-        .unwrap_or_else(|error| panic!("Erro ao ler arquivo {}! Erro: {}", path, error));
-
-    buffer
+    file.read_to_end(&mut buffer)?;
+    Ok(buffer)
 }

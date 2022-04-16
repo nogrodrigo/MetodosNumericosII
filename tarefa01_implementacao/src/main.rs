@@ -1,87 +1,127 @@
-mod bmp;
-mod conv_gauss;
-mod conv_laplace;
-mod conv_sobel;
-mod gaussian;
-mod laplace;
-mod matrix_utils;
-mod sobel;
+mod ppm;
+mod ppm_reader;
+
+mod pix_utils;
 mod utils;
-use bmp::BMPImage;
 
-// TODO: so funciona para imagens de dimensões pares.
+mod conv_gauss;
+mod gauss_filter;
 
-fn main() {
-    let image_width = 1200;
-    let image_height = 630;
-    let image_name = "sonic_1200x630";
+mod conv_sobel;
+mod sobel_filter;
 
-    // Alg1.
-    let old_img_content = utils::get_file(format!("src/imgs/{}.bmp", image_name).as_str());
-    let mut image = BMPImage::new(image_width, image_height);
-    image.bmp_insert_img_data(&old_img_content[54..]);
+mod conv_laplace;
+mod laplace_filter;
 
-    let m = image.bmp_matrix_with_zeros_edges();
-    println!("Aplicando o filtro de Gauss.");
-    // Aplicando o filtro Gaussiano na matriz/imagem M.
-    let m_gauss = conv_gauss::conv_2d_gauss(&m, 1.0, image.bmp_image_padding());
-    let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
-    let m_gauss_linear = matrix_utils::flatenning(&m);
-    image.bmp_insert_img_data(&m_gauss_linear);
-    image
-        .write_file(format!("src/imgs/{}_gauss.bmp", image_name).as_str())
-        .unwrap();
+use ppm_reader::PPMReader;
 
-    let m = image.bmp_matrix_with_zeros_edges();
-    println!("Aplicando o filtro de Sobel no eixo Y.");
-    // Aplicando Sobel na direção Y na matriz/imagem M, usando threshold de 255.0 / 2.
-    let a = conv_sobel::conv_2d_sobel(&m, 'y', image.bmp_image_padding(), 255.0 / 2.0);
-    let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
-    let a_linear = matrix_utils::flatenning(&a_pixels);
-    image.bmp_insert_img_data(&a_linear);
-    image
-        .write_file(format!("src/imgs/{}_sobel_y.bmp", image_name).as_str())
-        .unwrap();
+// TODO: Run sobel x, sobel y and laplace in threads.
 
-    println!("Aplicando o filtro de Sobel no eixo X.");
-    // Aplicando Sobel na direção X na matriz/imagem M, usando threshold de 255.0 / 2.
-    let b = conv_sobel::conv_2d_sobel(&m, 'x', image.bmp_image_padding(), 255.0 / 2.0);
-    let b_pixels = matrix_utils::from_pixel_matrix_to_matrix(&b, image.bmp_image_padding());
-    let b_linear = matrix_utils::flatenning(&b_pixels);
-    image.bmp_insert_img_data(&b_linear);
-    image
-        .write_file(format!("src/imgs/{}_sobel_x.bmp", image_name).as_str())
-        .unwrap();
+fn main() -> Result<(), std::io::Error> {
+    let image_name = "3840_2160";
 
-    println!("Somando Sobel X e Y.");
-    // Somando as duas matrizes usando => |G| = sqrt(Ay^(2) + Bx^(2)), e G = G / max(G) * 255.
-    let d = conv_sobel::sobel_magnitude(&a_pixels, &b_pixels);
-    let d_linear = matrix_utils::flatenning(&d);
-    image.bmp_insert_img_data(&d_linear);
-    image
-        .write_file(format!("src/imgs/{}_sobel_completo.bmp", image_name).as_str())
-        .unwrap();
+    println!("Lendo arquivo: ");
+    let file_content = utils::read_file(format!("./src/imgs/{}.ppm", image_name).as_str())?;
 
-    // Alg2.
-    let m = image.bmp_matrix_with_zeros_edges();
-    println!("Aplicando o filtro de Gauss.");
-    // Aplicando o filtro Gaussiano na matriz/imagem M.
-    let m_gauss = conv_gauss::conv_2d_gauss(&m, 1.6, image.bmp_image_padding());
-    let m = matrix_utils::from_pixel_matrix_to_matrix(&m_gauss, image.bmp_image_padding());
-    let m_gauss_linear = matrix_utils::flatenning(&m);
-    image.bmp_insert_img_data(&m_gauss_linear);
-    image
-        .write_file(format!("src/imgs/{}_gauss.bmp", image_name).as_str())
-        .unwrap();
+    println!("Criando e convertendo imagem: ");
+    let mut reader = PPMReader::new(&file_content);
+    let mut ppm_image = reader.create_ppm();
 
-    let m = image.bmp_matrix_with_zeros_edges();
+    let pixels_with_padding = pix_utils::add_padding(&ppm_image.image_data);
 
-    println!("Aplicando o filtro de Laplace.");
-    let a = conv_laplace::conv_2d_laplace(&m, 0.0001, image.bmp_image_padding());
-    let a_pixels = matrix_utils::from_pixel_matrix_to_matrix(&a, image.bmp_image_padding());
-    let a_linear = matrix_utils::flatenning(&a_pixels);
-    image.bmp_insert_img_data(&a_linear);
-    image
-        .write_file(format!("src/imgs/{}_laplace.bmp", image_name).as_str())
-        .unwrap();
+    println!("Aplicando Gauss na imagem: ");
+    let gauss = conv_gauss::conv_gauss(&pixels_with_padding, 1.4);
+    ppm_image.image_data = gauss.clone();
+    ppm_image.save(format!("./src/imgs/gauss_{}.ppm", image_name).as_str())?;
+
+    let pixels_with_padding = pix_utils::add_padding(&gauss);
+
+    println!("Aplicando Sobel Y na imagem: ");
+    let sobel_y = conv_sobel::conv_sobel(&pixels_with_padding, 'y', 255.0 / 2.0);
+    ppm_image.image_data = sobel_y.clone();
+    ppm_image.save(format!("./src/imgs/sobel_y_{}.ppm", image_name).as_str())?;
+
+    println!("Aplicando Sobel X na imagem: ");
+    let sobel_x = conv_sobel::conv_sobel(&pixels_with_padding, 'x', 255.0 / 2.0);
+    ppm_image.image_data = sobel_x.clone();
+    ppm_image.save(format!("./src/imgs/sobel_x_{}.ppm", image_name).as_str())?;
+
+    println!("Aplicando Sobel X+Y na imagem: ");
+    let sobel = conv_sobel::sobel_magnitude(&sobel_x, &sobel_y);
+    ppm_image.image_data = sobel;
+    ppm_image.save(format!("./src/imgs/sobel_{}.ppm", image_name).as_str())?;
+
+    let pixels_with_padding = pix_utils::add_padding(&gauss);
+
+    println!("Aplicando Laplace na imagem: ");
+    let laplace = conv_laplace::conv_laplace(&pixels_with_padding, 0.00001, 1.0);
+    ppm_image.image_data = laplace;
+    ppm_image.save(format!("./src/imgs/laplace_{}.ppm", image_name).as_str())?;
+
+    Ok(())
 }
+
+/*  let image_name = "sonic_1200x630";
+let file_content = utils::read_file(format!("./src/imgs/{}.ppm", image_name).as_str())?;
+
+let mut reader = PPMReader::new(&file_content);
+let mut ppm_image = reader.create_ppm();
+
+let pixels_with_padding = pix_utils::add_padding(&ppm_image.image_data);
+
+println!("Aplicando gauss na imagem: ");
+let gauss = conv_gauss::conv_gauss(&pixels_with_padding, 1.4);
+ppm_image.image_data = gauss.clone();
+ppm_image.save(format!("./src/imgs/gauss_{}.ppm", image_name).as_str())?;
+
+
+
+let pixels_with_padding = pix_utils::add_padding(&gauss);
+let pixels_with_padding_for_sobel_x = pixels_with_padding.clone();
+let pixels_with_padding_for_sobel_y = pixels_with_padding.clone();
+let (tx_sobel_x, rx) = mpsc::channel();
+let tx_sobel_y = tx_sobel_x.clone();
+let tx_sobel = tx_sobel_x.clone();
+let tx_laplace = tx_sobel_x.clone();
+
+std::thread::spawn(move || {
+    println!("Aplicando Sobel X na imagem: ");
+    let sobel_x = conv_sobel::conv_sobel(&pixels_with_padding_for_sobel_x, 'x', 255.0 / 2.0);
+    tx_sobel_y.send(sobel_x).unwrap();
+});
+
+std::thread::spawn(move || {
+    println!("Aplicando Sobel Y na imagem: ");
+    let sobel_y = conv_sobel::conv_sobel(&pixels_with_padding_for_sobel_y, 'y', 255.0 / 2.0);
+    tx_sobel_x.send(sobel_y).unwrap();
+
+});
+
+let sobel_a = rx.recv().unwrap();
+let sobel_b = rx.recv().unwrap();
+
+ppm_image.image_data = sobel_a.clone();
+ppm_image.save(format!("./src/imgs/sobel_a_{}.ppm", image_name).as_str())?;
+
+ppm_image.image_data = sobel_b.clone();
+ppm_image.save(format!("./src/imgs/sobel_b_{}.ppm", image_name).as_str())?;
+
+
+std::thread::spawn(move || {
+    println!("Juntando as duas imagens gerados por Sobel: ");
+    tx_sobel.send(conv_sobel::sobel_magnitude(&sobel_a, &sobel_b)).unwrap();
+});
+
+
+std::thread::spawn(move || {
+    println!("Aplicando Laplace na imagem: ");
+    tx_laplace.send(conv_laplace::conv_laplace(&pixels_with_padding, 0.00001, 1.0)).unwrap();
+});
+
+ppm_image.image_data = rx.recv().unwrap();
+ppm_image.save(format!("./src/imgs/sobel_{}.ppm", image_name).as_str())?;
+
+ppm_image.image_data = rx.recv().unwrap();
+ppm_image.save(format!("./src/imgs/laplace_{}.ppm", image_name).as_str())?;
+
+Ok(()) */

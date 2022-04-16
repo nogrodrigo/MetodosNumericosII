@@ -1,11 +1,8 @@
-use crate::matrix_utils;
-use crate::sobel;
+use crate::ppm::Pixel;
+use crate::sobel_filter;
 
-pub fn conv_2d_sobel(matrix: &Vec<Vec<u8>>, direction: char, padding: usize, threshold: f64) -> Vec<Vec<(u8, u8, u8)>> {
-    let m_pixels = matrix_utils::make_pixel_matrix(matrix, padding);
-
-    let kernel = sobel::sobel(direction);
-
+pub fn conv_sobel(m_pixels: &Vec<Vec<Pixel>>, direction: char, threshold: f64) -> Vec<Vec<Pixel>> {
+    let kernel = sobel_filter::sobel(direction);
 
     let mut out = Vec::new();
     for i in 1..(m_pixels.len() - 1) {
@@ -21,38 +18,38 @@ pub fn conv_2d_sobel(matrix: &Vec<Vec<u8>>, direction: char, padding: usize, thr
             let bottom_left = m_pixels[i + 1][j - 1];
             let bottom_right = m_pixels[i + 1][j + 1];
 
-            let new_pixel = top_left.0 as f64 * kernel[0][0]
-                + top_left.1 as f64 * kernel[0][0]
-                + top_left.2 as f64 * kernel[0][0]
-                + top.0 as f64 * kernel[0][1]
-                + top.1 as f64 * kernel[0][1]
-                + top.2 as f64 * kernel[0][1]
-                + top_right.0 as f64 * kernel[0][2]
-                + top_right.1 as f64 * kernel[0][2]
-                + top_right.2 as f64 * kernel[0][2]
-                + left.0 as f64 * kernel[1][0]
-                + left.1 as f64 * kernel[1][0]
-                + left.2 as f64 * kernel[1][0]
-                + right.0 as f64 * kernel[1][2]
-                + right.1 as f64 * kernel[1][2]
-                + right.2 as f64 * kernel[1][2]
-                + bottom_left.0 as f64 * kernel[2][0]
-                + bottom_left.1 as f64 * kernel[2][0]
-                + bottom_left.2 as f64 * kernel[2][0]
-                + bottom.0 as f64 * kernel[2][1]
-                + bottom_left.1 as f64 * kernel[2][1]
-                + bottom_left.2 as f64 * kernel[2][1]
-                + bottom_right.0 as f64 * kernel[2][2]
-                + bottom_right.1 as f64 * kernel[2][2]
-                + bottom_right.2 as f64 * kernel[2][2]
-                + center.0 as f64 * kernel[1][1]
-                + center.1 as f64 * kernel[1][1]
-                + center.2 as f64 * kernel[1][1];
+            let new_pixel = top_left.red() as f64 * kernel[0][0]
+                + top_left.green() as f64 * kernel[0][0]
+                + top_left.blue() as f64 * kernel[0][0]
+                + top.red() as f64 * kernel[0][1]
+                + top.green() as f64 * kernel[0][1]
+                + top.blue() as f64 * kernel[0][1]
+                + top_right.red() as f64 * kernel[0][2]
+                + top_right.green() as f64 * kernel[0][2]
+                + top_right.blue() as f64 * kernel[0][2]
+                + left.red() as f64 * kernel[1][0]
+                + left.green() as f64 * kernel[1][0]
+                + left.blue() as f64 * kernel[1][0]
+                + right.red() as f64 * kernel[1][2]
+                + right.green() as f64 * kernel[1][2]
+                + right.blue() as f64 * kernel[1][2]
+                + bottom_left.red() as f64 * kernel[2][0]
+                + bottom_left.green() as f64 * kernel[2][0]
+                + bottom_left.blue() as f64 * kernel[2][0]
+                + bottom.red() as f64 * kernel[2][1]
+                + bottom_left.green() as f64 * kernel[2][1]
+                + bottom_left.blue() as f64 * kernel[2][1]
+                + bottom_right.red() as f64 * kernel[2][2]
+                + bottom_right.green() as f64 * kernel[2][2]
+                + bottom_right.blue() as f64 * kernel[2][2]
+                + center.red() as f64 * kernel[1][1]
+                + center.green() as f64 * kernel[1][1]
+                + center.blue() as f64 * kernel[1][1];
 
             if new_pixel > threshold {
-                line.push((255,255,255));
+                line.push(Pixel::RGB(255, 255, 255));
             } else {
-                line.push((0, 0, 0));
+                line.push(Pixel::RGB(0, 0, 0));
             }
         }
         out.push(line);
@@ -62,42 +59,68 @@ pub fn conv_2d_sobel(matrix: &Vec<Vec<u8>>, direction: char, padding: usize, thr
 }
 
 #[allow(dead_code)]
-pub fn sobel_magnitude(mat_x: &Vec<Vec<u8>>, mat_y: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
+pub fn sobel_magnitude(mat_x: &Vec<Vec<Pixel>>, mat_y: &Vec<Vec<Pixel>>) -> Vec<Vec<Pixel>> {
     let mut aux = Vec::new();
 
     for i in 0..mat_x.len() {
         let mut line = Vec::new();
         for j in 0..mat_x[i].len() {
-            line.push((((mat_x[i][j] as f64).powf(2.0) + (mat_y[i][j] as f64).powf(2.0)) as f64).sqrt())
+            match (mat_x[i][j], mat_y[i][j]) {
+                (Pixel::RGB(rx, gx, bx), Pixel::RGB(ry, gy, by)) => {
+                    let r = (((rx as f64).powf(2.0) + (ry as f64).powf(2.0)) as f64).sqrt();
+                    let g = (((gx as f64).powf(2.0) + (gy as f64).powf(2.0)) as f64).sqrt();
+                    let b = (((bx as f64).powf(2.0) + (by as f64).powf(2.0)) as f64).sqrt();
+                    line.push(Pixel::RGBF64(r, g, b));
+                },
+                _ => {}
+            }
         }
 
         aux.push(line);
     }
-    
+
     let max = _max(&aux);
 
     let mut out = Vec::new();
     for i in 0..aux.len() {
         let mut line = Vec::new();
         for j in 0..aux[i].len() {
-            line.push((aux[i][j] / max * 255.0) as u8);
+            // Dividindo cada elemento da matriz pelo maior valor dela e multiplicando por 255, garantimos que os elementos não darão overflow de u8.
+            match aux[i][j] {
+                Pixel::RGBF64(r, g, b) => {
+                    let r = (r / max * 255.0) as u8;
+                    let g = (g / max * 255.0) as u8;
+                    let b = (b / max * 255.0) as u8;
+                    line.push(Pixel::RGB(r, g, b));
+                },
+                _ => {}
+            }
         }
 
         out.push(line);
     }
 
     out
-
 }
 
-fn _max(m: &Vec<Vec<f64>>) -> f64 {
-
+fn _max(m: &Vec<Vec<Pixel>>) -> f64 {
     let mut max = 0.0;
 
     for i in 0..m.len() {
         for j in 0..m[i].len() {
-            if m[i][j] > max {
-                max = m[i][j];
+            match m[i][j]  {
+                Pixel::RGBF64(r, g, b) => {
+                    if r > max {
+                        max = r;
+                    }
+                    if g > max {
+                        max = g;
+                    }
+                    if b > max {
+                        max = b;
+                    }
+                },
+                _ => {}
             }
         }
     }
