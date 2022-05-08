@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["ppm_image_processing"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.59.0/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"enum\" href=\"ppm_image_processing/ppm/enum.Pixel.html\" title=\"enum ppm_image_processing::ppm::Pixel\">Pixel</a>","synthetic":false,"types":["ppm_image_processing::ppm::Pixel"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

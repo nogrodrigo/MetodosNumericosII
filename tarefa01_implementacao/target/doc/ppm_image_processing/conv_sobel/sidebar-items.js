@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["_max",""],["conv_sobel",""],["sobel_magnitude",""]]});

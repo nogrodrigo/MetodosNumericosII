@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["_x_gaussian_filter",""],["_y_gaussian_filter",""],["gaussian","Retorna um filtro gaussiano."]]});
