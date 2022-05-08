@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["main",""]],"mod":[["conv_gauss",""],["conv_laplace",""],["conv_sobel",""],["gauss_filter",""],["laplace_filter",""],["pix_utils",""],["ppm",""],["ppm_reader",""],["sobel_filter",""],["utils",""]]});

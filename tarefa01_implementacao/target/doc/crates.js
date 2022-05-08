@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["ppm_image_processing"];
