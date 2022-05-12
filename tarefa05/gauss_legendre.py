@@ -2,6 +2,7 @@ from math import inf, log2
 from typing import Callable, Dict, List, Tuple
 from colors import Colors
 
+
 def gauss_legendre_2(xi: float | int, xf: float | int, func: Callable[[int | float], float]):
     w1 = 1
     w2 = 1
@@ -39,6 +40,7 @@ def gauss_legendre_4(xi: float | int, xf: float | int, func: Callable[[int | flo
     func_xs_4 = func(xs_4)
     return ((xf - xi) / 2) * (func_xs_1 * w1 + func_xs_2 * w2 + func_xs_3 * w3 + func_xs_4 * w4)
 
+
 def get_gauss_legendre_methods():
     return [gauss_legendre_2, gauss_legendre_3, gauss_legendre_4]
 
@@ -47,10 +49,16 @@ def run_gauss_legendre(a: float | int, b: float | int, num_p: int, func: Callabl
     print(f"{Colors.BOLD} {Colors.BLUE}\n\nGauss-Legendre:{Colors.END_FORMAT}")
     method = None
     if num_p == 2:
+        print(
+            f"{Colors.BOLD}{Colors.PURPLE}\tGauss-Legendre de grau 2:{Colors.END_FORMAT}")
         method = gauss_legendre_2
     elif num_p == 3:
+        print(
+            f"{Colors.BOLD}{Colors.PURPLE}\tGauss-Legendre de grau 3:{Colors.END_FORMAT}")
         method = gauss_legendre_3
     elif num_p == 4:
+        print(
+            f"{Colors.BOLD}{Colors.PURPLE}\tGauss-Legendre de grau 4:{Colors.END_FORMAT}")
         method = gauss_legendre_4
 
     value, num_it = _calculate(a, b, func, method)
@@ -61,7 +69,6 @@ def _calculate(
     a: float | int, b: float | int,
     func: Callable[[int | float], float],
     method: Callable[[int | float], float],
-    **kwargs: Dict[str, int | float]
 ) -> Tuple[float | int, int]:
     N = 1
     i_old = 0
