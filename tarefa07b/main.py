@@ -19,4 +19,4 @@ print("Eq 2")
 # print("Hermite: ")
 # print(gauss_hermite_4(-2, 0, lambda x: (1/(4 - x**2)**(1/2)))) # OK
 print("Legendre: ")
-print(gauss_legendre_exp_simp_calculate(-2, 0, -4, 4, lambda x: (1/(4 - x**2)**(1/2)), num_p=4, eps=0.01)) # OK
+print(gauss_legendre_exp_simp_calculate(-2, 0, -8, 8, lambda x: (1/(4 - x**2)**(1/2)), num_p=4, eps=0.01)) # OK
