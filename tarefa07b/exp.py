@@ -16,6 +16,9 @@ def gauss_hermite_4(xi: float, xf: float, func: Callable[[float], float]) -> flo
     return (exp(x1 * x1) * f_bar_simp(xi, xf, x1, func) * w1) + exp(x2 * x2) *(f_bar_simp(xi, xf, x2, func) * w2) + exp(x3 * x3) * (f_bar_simp(xi, xf, x3, func) * w3) + exp(x4 * x4) * (f_bar_simp(xi, xf, x4, func)*w4)
 
 
+# ============================================================================================================== #
+# =========================================== LEGENDRE SIMPLES ================================================= #
+# ============================================================================================================== #
 
 def gauss_legendre_simp_2(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[float], float]):
     w1 = 1
@@ -55,7 +58,7 @@ def gauss_legendre_simp_4(xi: float | int, xf: float | int, ci: float | int, cf:
 
 
 
-def gauss_legendre_integrate(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[int | float], float], num_p: int) -> float:
+def gauss_legendre_integrate_simp(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[int | float], float], num_p: int) -> float:
     if num_p == 2:
         return gauss_legendre_simp_2(xi, xf, ci, cf, func)
     elif num_p == 3:
@@ -108,9 +111,6 @@ def f_bar(ini: float, fin: float, s: float, f: Callable[[float], float]) -> floa
     return f(xs_simp(ini, fin, s)) * ds_simp(ini, fin, s)
 
 
-
-
-
 def gauss_legendre_exp_simp_calculate(xi: float, xf: float, ci: float, cf: float, func:  Callable[[float], float], num_p: int,  eps: float) -> float:
     new_i = inf
     old_i = inf
@@ -125,13 +125,85 @@ def gauss_legendre_exp_simp_calculate(xi: float, xf: float, ci: float, cf: float
         for i in range(n):
             x_ini = ci + (i * delta_x)
             x_fin = x_ini + delta_x
-            new_i += gauss_legendre_integrate(xi, xf, x_ini, x_fin, func, num_p)
+            new_i += gauss_legendre_integrate_simp(xi, xf, x_ini, x_fin, func, num_p)
 
         err = abs((new_i - old_i) / new_i)
         n *= 4
 
     return new_i
 
+
+# ============================================================================================================== #
+# ============================================ LEGENDRE DUPLA ================================================= #
+# ============================================================================================================== #
+def gauss_legendre_doub_2(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[float], float]):
+    w1 = 1
+    w2 = 1
+    xs_1 = ((xi + xf) / 2) + ((xf - xi) / 2) * (- (1/3)**0.5)
+    xs_2 = ((xi + xf) / 2) + ((xf - xi) / 2) * ((1/3)**0.5)
+    func_xs_1 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_1), func)
+    func_xs_2 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_2), func)
+    return ((cf - ci) / 2) * (func_xs_1 * w1 + func_xs_2 * w2)
+
+def gauss_legendre_doub_3(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[int | float], float]):
+    w1 = w3 = 5 / 9
+    w2 = 8 / 9
+    xs_1 = ((xi + xf) / 2) + ((xf - xi) / 2) * (- (3/5)**0.5)
+    xs_2 = ((xi + xf) / 2) + ((xf - xi) / 2) * 0
+    xs_3 = ((xi + xf) / 2) + ((xf - xi) / 2) * ((3/5)**0.5)
+    func_xs_1 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_1), func)
+    func_xs_2 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_2), func)
+    func_xs_3 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_3), func)
+    return ((cf - ci) / 2) * (func_xs_1 * w1 + func_xs_2 * w2 + func_xs_3 * w3)
+
+
+def gauss_legendre_doub_4(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[int | float], float]):
+    w1 = w4 = (18 + 30**0.5) / 36
+    w2 = w3 = (18 - 30**0.5) / 36
+    r1 = ((3 / 7) + (2 / 7) * (6 / 5)**0.5)**0.5
+    r2 = ((3 / 7) - (2 / 7) * (6 / 5)**0.5)**0.5
+    xs_1 = ((xi + xf) / 2) + ((xf - xi) / 2) * (-r2)
+    xs_2 = ((xi + xf) / 2) + ((xf - xi) / 2) * (-r1)
+    xs_3 = ((xi + xf) / 2) + ((xf - xi) / 2) * r1
+    xs_4 = ((xi + xf) / 2) + ((xf - xi) / 2) * r2
+    func_xs_1 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_1), func)
+    func_xs_2 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_2), func)
+    func_xs_3 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_3), func)
+    func_xs_4 = f_bar_doub(xi, xf, s_bar(ci, cf, xs_4), func)
+    return ((cf - ci) / 2) * (func_xs_1 * w1 + func_xs_2 * w2 + func_xs_3 * w3 + func_xs_4 * w4)
+
+
+
+def gauss_legendre_integrate_doub(xi: float | int, xf: float | int, ci: float | int, cf: float | int, func: Callable[[int | float], float], num_p: int) -> float:
+    if num_p == 2:
+        return gauss_legendre_doub_2(xi, xf, ci, cf, func)
+    elif num_p == 3:
+        return gauss_legendre_doub_3(xi, xf, ci, cf, func)
+    elif num_p == 4:
+        return gauss_legendre_doub_4(xi, xf, ci, cf, func)
+        
+
+
+def gauss_legendre_exp_doub_calculate(xi: float, xf: float, ci: float, cf: float, func:  Callable[[float], float], num_p: int,  eps: float) -> float:
+    new_i = inf
+    old_i = inf
+    n = 1
+    err = inf
+
+    while err > eps:
+        old_i = new_i
+        delta_x = (cf - ci) / n
+        new_i = 0
+
+        for i in range(n):
+            x_ini = ci + (i * delta_x)
+            x_fin = x_ini + delta_x
+            new_i += gauss_legendre_integrate_doub(xi, xf, x_ini, x_fin, func, num_p)
+
+        err = abs((new_i - old_i) / new_i)
+        n *= 4
+
+    return new_i
 
 # ============================================================================================================== #
 # =================================================== DUPLA =================================================== #
