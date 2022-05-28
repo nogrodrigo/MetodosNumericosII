@@ -59,8 +59,25 @@ def gauss_legendre_exp_simp(ini: float, fin: float, ci: float, cf: float, num_p:
 
 
 def gauss_legendre_exp_simp_calculate(xi: float, xf: float, ci: float, cf: float, num_p: int, func:  Callable[[float], float], eps: float) -> float:
+    new_i = inf
+    old_i = inf
+    n = 1
+    err = inf
 
-    return 0
+    while err > eps:
+        old_i = new_i
+        delta_x = (cf - ci) / n
+        new_i = 0
+
+        for i in range(n):
+            x_ini = ci + (i * delta_x)
+            x_fin = x_ini + delta_x
+            new_i += gauss_legendre_exp_simp(xi, xf, x_ini, x_fin, num_p, func)
+
+        err = abs((new_i - old_i) / new_i)
+        n *= 2
+
+    return new_i
 
 # ============================================================================================================== #
 # =================================================== DUPLA =================================================== #
