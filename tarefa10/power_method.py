@@ -17,6 +17,6 @@ def power_method(A: List[List[float]], v_ini: List[float], eps: float) -> Tuple[
         v_old = unit_vec(v_old)               # Step 6
         v_new = dot_prod_mat_x_vec(A, v_old)  # Step 7
         λ_new = dot_prod_vec(v_old, v_new)    # Step 8
-        error = (λ_new - lamb_old) / λ_new    # Step 9 - 10
+        error = abs(λ_new - lamb_old) / λ_new    # Step 9 - 10
 
     return λ_new, v_old
