@@ -1,14 +1,6 @@
 from exp import *
 
 
-print("Eq 0")
-# print("Hermite: ")
-# print(gauss_hermite_4(0, 1,func=lambda x: (1/(x)**0.5))) # OK
-print("Legendre: ")
-print("Simples: ", gauss_legendre_exp_simp_calculate(0, 1, ci=-6, cf=6, func=lambda x: (1/(x)**0.5), num_p=4, eps=0.01)) # OK
-print("Dupla: ", gauss_legendre_exp_doub_calculate(0, 1, ci=-2, cf=2, func=lambda x: (1/(x)**0.5), num_p=4, eps=0.01)) # OK
-print("==============================================")
-
 print("Eq 1")
 # print("Hermite: ")
 # print(gauss_hermite_4(-1, 1,func=lambda x: (1/(x**2)**(1/3)))) # OK
