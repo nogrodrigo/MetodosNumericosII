@@ -4,5 +4,6 @@
     "files.associations": {
         "limits": "cpp",
         "cmath": "cpp"
-    }
+    },
+    "python.formatting.provider": "black"
 }
