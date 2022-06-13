@@ -70,6 +70,19 @@ def dot_prod_mat_x_vec(mat: List[List[float]], vec: List[float]) -> List[float]:
     return new_vec
 
 
+def indentity(size: int) -> List[List[float]]:
+    out = []
+    for i in range(size):
+        line = []
+        for j in range(size):
+            if i == j:
+                line.append(1.0)
+            else:
+                line.append(0.0)
+        out.append(line)
+    return out
+
+
 def normalize_vec(vec: List[float | int]) -> float:
     vec = list(map(lambda e: e * e, vec))
     return sum(vec) ** (0.5)
