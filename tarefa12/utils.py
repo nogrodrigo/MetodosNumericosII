@@ -100,6 +100,9 @@ def print_mat(mat: List[List], label=None) -> None:
     for row in mat:
         line_str = "|"
         for e in row:
-            line_str += f" {e:^15.10f} "
+            if abs(e) < 1e-10:
+                line_str += f" {0.0:^15.6} "
+            else: 
+                line_str += f" {e:^15.6} "
         line_str += "|"
         print(line_str)

@@ -1,7 +1,6 @@
-from copy import copy
+from typing import Tuple
 import numpy as np
 from numpy.typing import NDArray
-from utils import print_mat
 
 """ print(f"Vetor w: {w}")
     print(f"Vetor w': {w_l}")
@@ -10,7 +9,17 @@ from utils import print_mat
     print(f"Vetor Módulo do N: {n_mod}")
     print(f"Vetor n: {n}")
     print(f"Vetor n_t: {n_t}")
-    print(f"H3: {H}") """
+    print(f"H3: {H}") 
+
+    A_test = np.array(
+        [[3, 1, 0, 0, 0],
+        [1, 4, 3, 0, 0],
+        [0, 3, 5, 2, 1],
+        [0, 0, 2, 6, 3],
+        [0, 0, 1, 3, 8]])  
+    
+"""
+
 
 def householder_mat(A: NDArray, i: int) -> NDArray:
     size = len(A)
@@ -34,29 +43,26 @@ def householder_mat(A: NDArray, i: int) -> NDArray:
     # n transposto
     n_t = np.array([n]).transpose()
     # Montar a matriz de Householder
-    H = I - 2*n*n_t
+    H = I - 2 * n * n_t
 
     return H
 
 
-def householder_method(A: NDArray):
+def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
     n = len(A)
     H = np.identity(n)
     A_prev = A.copy()
-    A_curr = None
-    # Construção da matriz de Householder do passo i.
-    H_i = householder_mat(A_prev, 2)
-    # Transformação de similaridade do passo i.
-    A_curr = H_i * A_prev * H_i
-    # Salvar para o próximo passo.
-    A_prev = A_curr.copy()
-    # Acumular o produto das matrizes de Householder.
-    #H = H * H_i
+    for i in range(n-2):
+        # Construção da matriz de Householder do passo i.
+        H_i = householder_mat(A_prev, i)
+        # Transformação de similaridade do passo i.
+        A_curr = H_i @ A_prev @ H_i
+        # Salvar para o próximo passo.
+        A_prev = A_curr.copy()
+        # Acumular o produto das matrizes de Householder.
+        H = H * H_i
 
-    print_mat(A.tolist(), "A2:")
-    print_mat(H_i.tolist(), "H3: ")
-    print_mat(A_prev.tolist(), "A3:")
-
+    return (A_prev, H)
 
 
 A = np.array(
@@ -66,12 +72,8 @@ A = np.array(
      [2, 6, 1, 25, 4],
      [1, 2, 2, 4, 5]])
 
+A, H = householder_method(A)
 
-A_test = np.array(
-    [[3, 1, 0, 0, 0],
-     [1, 4, 3, 0, 0],
-     [0, 3, 5, 2, 1],
-     [0, 0, 2, 6, 3],
-     [0, 0, 1, 3, 8]])
-
-householder_method(A_test)
+from utils import print_mat
+print_mat(A.tolist(), "A:")
+print_mat(H.tolist(), "H:")
