@@ -1,9 +1,8 @@
 from math import inf
-from re import X
 from typing import Tuple
 from numpy.typing import NDArray
 import numpy as np
-from utils import print_mat
+from utils import print_mat, print_vec
 
 def QR_method(A: NDArray, eps: float = 1e-5) -> Tuple[NDArray, NDArray]:
     L = inf
@@ -83,4 +82,4 @@ A = np.array(
 
 phi, lamb = QR_method(A)
 print_mat(phi.tolist(), "Phi:")
-print(f"Lambda: {lamb.tolist()}")
+print_vec(lamb.tolist(), "Lambda: ")
