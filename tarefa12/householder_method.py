@@ -47,7 +47,6 @@ def householder_mat(A: NDArray, i: int) -> NDArray:
 
     return H
 
-
 def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
     n = len(A)
     H = np.identity(n)
@@ -72,7 +71,13 @@ A = np.array(
      [2, 6, 1, 25, 4],
      [1, 2, 2, 4, 5]])
 
+# Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.
 A, H = householder_method(A)
+# Use os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.
+
+# Usando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.
+
+# Encontre os autovalores da matriz A.
 
 from utils import print_mat
 print_mat(A.tolist(), "A:")
