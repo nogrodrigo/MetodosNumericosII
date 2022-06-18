@@ -18,7 +18,7 @@ def power_method_inv(A: List[List[float]], v_ini: List[float], eps: float) -> Tu
         v_old = unit_vec(v_old)                # Step 7
         v_new = resolution_LU(L, U, v_old)     # Step 8
         λ_new = dot_prod_vec(v_old, v_new)     # Step 9
-        error = abs(λ_new - lamb_old) / λ_new  # Step 10
+        error = abs((λ_new - lamb_old) / λ_new)  # Step 10
 
     λ_new = 1 / λ_new
 
