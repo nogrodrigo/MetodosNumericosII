@@ -1,24 +1,10 @@
 from typing import Tuple
 import numpy as np
 from numpy.typing import NDArray
-
-""" print(f"Vetor w: {w}")
-    print(f"Vetor w': {w_l}")
-    print(f"Vetor Lw: {l_w}")
-    print(f"Vetor N: {N}")
-    print(f"Vetor Módulo do N: {n_mod}")
-    print(f"Vetor n: {n}")
-    print(f"Vetor n_t: {n_t}")
-    print(f"H3: {H}") 
-
-    A_test = np.array(
-        [[3, 1, 0, 0, 0],
-        [1, 4, 3, 0, 0],
-        [0, 3, 5, 2, 1],
-        [0, 0, 2, 6, 3],
-        [0, 0, 1, 3, 8]])  
-    
-"""
+from power_method import power_method
+from power_method_inv import power_method_inv
+from power_method_shif import power_method_shiff
+from utils import print_mat, print_vec
 
 
 def householder_mat(A: NDArray, i: int) -> NDArray:
@@ -64,7 +50,7 @@ def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
     return (A_prev, H)
 
 
-A = np.array(
+A1 = np.array(
     [[40, 8, 4, 2, 1],
      [8, 30, 12, 6, 2],
      [4, 12, 20, 1, 2],
@@ -72,13 +58,26 @@ A = np.array(
      [1, 2, 2, 4, 5]])
 
 # Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.
-A, H = householder_method(A)
+A, H = householder_method(A1)
+print_mat(A.tolist(), "A:")
+print_mat(H.tolist(), "H:")
 # Use os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.
+eigenvalue_1, eigenvector_1 = power_method(A.tolist(), [1.0] * 5, 1e-6)
+eigenvalue_2, eigenvector_2 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-6, 33) # ?
+eigenvalue_3, eigenvector_3 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-6, 20)
+eigenvalue_4, eigenvector_4 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-6, 10)
+eigenvalue_5, eigenvector_5 = power_method_inv(A.tolist(), [1.0] * 5, 1e-6)
 
+print(f"Autovalor 1: {eigenvalue_1}")
+print(f"Autovalor 2: {eigenvalue_2}")
+print(f"Autovalor 3: {eigenvalue_3}")
+print(f"Autovalor 4: {eigenvalue_4}")
+print(f"Autovalor 5: {eigenvalue_5}")
+print_vec(eigenvector_1, "Autovetor 1:")
+print_vec(eigenvector_2, "Autovetor 2:")
+print_vec(eigenvector_3, "Autovetor 3:")
+print_vec(eigenvector_4, "Autovetor 4:")
+print_vec(eigenvector_5, "Autovetor 5:")
 # Usando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.
 
 # Encontre os autovalores da matriz A.
-
-from utils import print_mat
-print_mat(A.tolist(), "A:")
-print_mat(H.tolist(), "H:")

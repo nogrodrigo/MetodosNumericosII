@@ -5,7 +5,6 @@ import numpy as np
 
 def power_method_shiff(A: List[List[float]], v_0: List[float], ε: float, μ: float) -> Tuple[float, List[float]]:
 
-    λ_i = 0
     A = np.array(A) - (μ * np.identity(len(A)))
     λ, x = power_method_inv(A.tolist(), v_0, ε)
     λ_i = λ + μ
