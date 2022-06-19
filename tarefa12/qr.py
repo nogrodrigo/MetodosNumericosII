@@ -110,6 +110,3 @@ phi, lamb = QR_method(A_bar, 1e-6, True)
 print_mat(phi.tolist(), "\n\nPhi: ")
 phi = H @ phi
 print_mat(phi.tolist(), "\n\nH * Phi: ")
-print_vec(lamb.tolist(), "\n\nlamb: ")
-# print_mat(H.tolist(), "\n\nH: ")
-# print_mat(A_bar.tolist(), "\n\nA_bar")
