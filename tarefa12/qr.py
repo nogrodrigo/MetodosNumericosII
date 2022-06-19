@@ -3,18 +3,21 @@ from typing import Tuple
 from numpy.typing import NDArray
 import numpy as np
 from utils import print_mat, print_vec
+from householder_method import householder_method
 
-def QR_method(A: NDArray, eps: float = 1e-5) -> Tuple[NDArray, NDArray]:
+def QR_method(A: NDArray, eps: float = 1e-5, flag: bool = False) -> Tuple[NDArray, NDArray]:
     L = inf
-    A_new = A.copy()
+    A_old = A.copy()
     phi = np.identity(len(A))
     i = 0
     while L > eps:
-        A_old = A_new
         Q, R = QR(A_old)
         print_mat(Q.tolist(), f"Matriz Q na iteração {i}: ")
         print_mat(R.tolist(), f"Matriz R na iteração {i}: ")
         A_new = R @ Q
+        A_old = A_new
+        if flag:
+            print_mat(A_new.tolist(), f"Matriz A_new na iteração {i}: ")
         phi = phi @ Q
         L = sum_of_squares(A_new)
         i += 1
@@ -99,4 +102,14 @@ print(f"Autovalor 4: {lamb[3]}")
 print_vec(phi[0:len(A), 3].tolist(), "\nAutovetor 4:")
 print(f"Autovalor 5: {lamb[4]}")
 print_vec(phi[0:len(A), 4].tolist(), "\nAutovetor 5:")
+
 # 2)
+print()
+A_bar, H = householder_method(A)
+phi, lamb = QR_method(A_bar, 1e-6, True)
+print_mat(phi.tolist(), "\n\nPhi: ")
+phi = H @ phi
+print_mat(phi.tolist(), "\n\nH * Phi: ")
+print_vec(lamb.tolist(), "\n\nlamb: ")
+# print_mat(H.tolist(), "\n\nH: ")
+# print_mat(A_bar.tolist(), "\n\nA_bar")
