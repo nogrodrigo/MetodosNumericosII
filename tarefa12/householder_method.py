@@ -41,11 +41,11 @@ def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
         # Construção da matriz de Householder do passo i.
         H_i = householder_mat(A_prev, i)
         # Transformação de similaridade do passo i.
-        A_curr = H_i @ A_prev @ H_i
+        A_curr = H_i.transpose() @ A_prev @ H_i
         # Salvar para o próximo passo.
         A_prev = A_curr.copy()
         # Acumular o produto das matrizes de Householder.
-        H = H * H_i
+        H = H @ H_i
 
     return (A_prev, H)
 
@@ -59,17 +59,17 @@ A1 = np.array(
 
 # Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.
 print("Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.")
-A, H = householder_method(A1)
-print_mat(A.tolist(), "A barra: ")
+A_bar, H = householder_method(A1)
+print_mat(A_bar.tolist(), "A barra: ")
 print_mat(H.tolist(), "H: ")
 
 # Use os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.
 print("\nUse os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.")
-eigenvalue_1, eigenvector_1 = power_method(A.tolist(), [1.0] * 5, 1e-10)
-eigenvalue_2, eigenvector_2 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-10, 33)
-eigenvalue_3, eigenvector_3 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-10, 20)
-eigenvalue_4, eigenvector_4 = power_method_shiff(A.tolist(), [1.0] * 5, 1e-10, 10)
-eigenvalue_5, eigenvector_5 = power_method_inv(A.tolist(), [1.0] * 5, 1e-10)
+eigenvalue_1, eigenvector_1 = power_method(A_bar.tolist(), [1.0] * 5, 1e-10)
+eigenvalue_2, eigenvector_2 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 33)
+eigenvalue_3, eigenvector_3 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 20)
+eigenvalue_4, eigenvector_4 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 10)
+eigenvalue_5, eigenvector_5 = power_method_inv(A_bar.tolist(), [1.0] * 5, 1e-10)
 
 print(f"Autovalor 1 de A barra: {eigenvalue_1}")
 print(f"Autovalor 2 de A barra: {eigenvalue_2}")
@@ -83,11 +83,11 @@ print_vec(eigenvector_4, "Autovetor 4 de A barra:")
 print_vec(eigenvector_5, "Autovetor 5 de A barra:")
 # Usando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.
 print("\nUsando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.")
-print_vec((np.array(eigenvector_1) @ H).tolist(), "Autovetor 1 de A: ")
-print_vec((np.array(eigenvector_2) @ H).tolist(), "Autovetor 2 de A: ")
-print_vec((np.array(eigenvector_3) @ H).tolist(), "Autovetor 3 de A: ")
-print_vec((np.array(eigenvector_4) @ H).tolist(), "Autovetor 4 de A: ")
-print_vec((np.array(eigenvector_5) @ H).tolist(), "Autovetor 5 de A: ")
+print_vec((np.array(eigenvector_1).transpose() @ H).tolist(), "Autovetor 1 de A: ")
+print_vec((np.array(eigenvector_2).transpose() @ H).tolist(), "Autovetor 2 de A: ")
+print_vec((np.array(eigenvector_3).transpose() @ H).tolist(), "Autovetor 3 de A: ")
+print_vec((np.array(eigenvector_4).transpose() @ H).tolist(), "Autovetor 4 de A: ")
+print_vec((np.array(eigenvector_5).transpose() @ H).tolist(), "Autovetor 5 de A: ")
 # Encontre os autovalores da matriz A.
 print("\nEncontre os autovalores da matriz A.")
 eigenvalue_1, eigenvector_1 = power_method(A1.tolist(), [1.0] * 5, 1e-10)
