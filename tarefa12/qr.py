@@ -8,12 +8,16 @@ def QR_method(A: NDArray, eps: float = 1e-5) -> Tuple[NDArray, NDArray]:
     L = inf
     A_new = A.copy()
     phi = np.identity(len(A))
+    i = 0
     while L > eps:
         A_old = A_new
         Q, R = QR(A_old)
+        print_mat(Q.tolist(), f"Matriz Q na iteração {i}: ")
+        print_mat(R.tolist(), f"Matriz R na iteração {i}: ")
         A_new = R @ Q
         phi = phi @ Q
         L = sum_of_squares(A_new)
+        i += 1
     
     lamb = np.array([A_new[i, i] for i in range(len(A_new))])
     return (phi, lamb)
@@ -28,7 +32,8 @@ def QR(A: NDArray) -> Tuple[NDArray, NDArray]:
         Hj = householder_hj(A_old, j)
         A_new = Hj @ A_old
         QT = Hj @ QT
-    
+        # print_mat(QT.tolist(), f"Matriz Q na iteração {j}: ")
+
     return (QT.transpose(), A_new)
 
 
@@ -80,6 +85,18 @@ A = np.array(
      [2, 6, 1, 25, 4],
      [1, 2, 2, 4, 5]])
 
+# 1)
 phi, lamb = QR_method(A)
-print_mat(phi.tolist(), "Phi:")
-print_vec(lamb.tolist(), "Lambda: ")
+print_mat(phi.tolist(), "\n\nPhi:")
+print_vec(lamb.tolist(), "\n\nLambda: ")
+print(f"\nAutovalor 1: {lamb[0]}")
+print_vec(phi[0:len(A), 0].tolist(), "Autovetor 1:")
+print(f"Autovalor 2: {lamb[1]}")
+print_vec(phi[0:len(A), 1].tolist(), "\nAutovetor 2:")
+print(f"Autovalor 3: {lamb[2]}")
+print_vec(phi[0:len(A), 2].tolist(), "\nAutovetor 3:")
+print(f"Autovalor 4: {lamb[3]}")
+print_vec(phi[0:len(A), 3].tolist(), "\nAutovetor 4:")
+print(f"Autovalor 5: {lamb[4]}")
+print_vec(phi[0:len(A), 4].tolist(), "\nAutovetor 5:")
+# 2)
