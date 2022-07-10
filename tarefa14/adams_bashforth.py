@@ -3,8 +3,7 @@
 # Si+1 = Si + dt/24 * ( 55*Fi - 59*Fi-1 + 37*Fi-2 - 9*Fi-3 ) <- Predição
 # Si+1 = Si + dt/24 * ( 9*Fi+1 + 19*Fi - 5*Fi-1 + Fi-2 ) <- Correção
 from typing import Callable, Tuple
-
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 t_0 = 0
@@ -65,13 +64,13 @@ print("V0......................:", v_0)
 print("Y0......................:", y_0)
 print("T0......................:", t_0)
 
-""" x_list = []
+x_list = []
 y_list = []
 x, y = adams_bashforth(0, v_0, y_0, dt, F)
 x_list.append(x)
 y_list.append(y)
 
-for i in range(0, 200):
+for i in range(0, 45):
     x, y = adams_bashforth(0, x, y, dt, F)
     x_list.append(x)
     y_list.append(y)
@@ -79,4 +78,3 @@ for i in range(0, 200):
 
 plt.plot(x_list, y_list)
 plt.show()
- """
