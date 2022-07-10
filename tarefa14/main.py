@@ -31,14 +31,15 @@ def adams_bashforth(v: float, x_0: float, y_0: float, dt: float, F: Callable) ->
     print("Valores de Y' calculados: ", _y_0, _y_1, y_2, _y_3)
     # Predição
     _y_4 = y_3 + ((dt / 24) * ((55 * _y_3) - (59 * _y_2) + (37 * _y_1) - (9 * _y_0)))
-    print("Predição: ", _y_4)
+    print("Predição................: ", _y_4)
     # Recalculando y'4 com o valor encontrado na predição.
     # y'4 = F(v, y'4)
     #         ^-------- O valor que estamos tentando aproximar.
     _y_4 = F(v, _y_4)
     # Correção
     y_4 = y_3 + ((dt / 24) * (9 * _y_4 + 19 * _y_3 - 5 * _y_2 + _y_1))
-    print("Correção: ", y_4)
+    print("Correção................: ", y_4)
+    print("Valor de x..............: ", x_3)
     return y_4
 
 
@@ -59,7 +60,10 @@ def K(curr_y: float, x_0: float, F: Callable) -> float:
     return curr_y + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
 
-adams_bashforth(0.8, 0, 1, dt, F)
+print("V0......................:", v_0)
+print("Y0......................:", y_0)
+print("T0......................:", t_0)
+adams_bashforth(200, v_0, y_0, dt, F)
 
 
 """ for dt in [0.1, 0.01, 0.001, 0.0001]:
