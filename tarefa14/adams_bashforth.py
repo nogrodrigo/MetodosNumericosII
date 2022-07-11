@@ -14,47 +14,6 @@ g = 10
 dt = 0.1
 
 
-def sub_step(last_state: Tuple[float, float], dt: float) -> Tuple[float, float]:
-    last_v, last_y = last_state
-
-    v1 = -g - (k / m) * last_v
-    v2 = -g - (k / m) * (last_v + (dt / 2))
-    v3 = -g - (k / m) * (last_v + (dt / 2))
-    v4 = -g - (k / m) * (last_v + dt)
-    v = last_v + (dt / 6) * (v1 + (2 * v2) + (2 * v3) + v4)
-
-    y1 = last_y
-    y2 = last_y + (v1 * dt / 2)
-    y3 = last_y + (v2 * dt / 2)
-    y4 = last_y + (v3 * dt)
-    y = last_y + ((dt / 6) * (y1 + (2 * y2) + (2 * y3) + y4))
-
-    return (v, y)
-
-
-def getSubstep(
-    pastState: Tuple[float, float], dt: float, j: int
-) -> Tuple[float, float]:
-    vPast, yPast = pastState
-    v = vPast + dt * (-g - k * vPast / m) / j
-    y = yPast + dt * (vPast) / j
-    return (v, y)
-
-
-def getNextState(pastState: Tuple[float, float], dt: float) -> Tuple[float, float]:
-    vPast, yPast = pastState
-    subv1, suby1 = getSubstep(pastState, dt, 2)
-    subv2, suby2 = getSubstep(pastState, dt, 1)
-    v = vPast + dt * (
-        (-g - k * vPast / m) / 6
-        + 4 * (-g - k * subv1 / m) / 6
-        + (-g - k * subv2 / m) / 6
-    )
-    y = yPast + dt * (vPast / 6 + 4 * subv1 / 6 + subv2 / 6)
-
-    return (v, y)
-
-
 def next_state(s1, s2, s3, s4, dt: float):
     v1, y1 = s1
     v2, y2 = s2
@@ -78,16 +37,34 @@ def next_state(s1, s2, s3, s4, dt: float):
     _v5 = -g - (k / m) * v5
     _y5 = v5
 
-    #Correção
+    # Correção
     _v5 = v4 + ((dt / 24) * (9 * _v5 + 19 * _v4 - 5 * _v3 + _v2))
     _y5 = y4 + ((dt / 24) * (9 * _y5 + 19 * _y4 - 5 * _y3 + _y2))
 
     return (_v5, _y5)
 
 
-v_1, y_1 = v_0 + (dt / 2) * (- g - k * v_0 / m), y_0 + (dt / 2) * v_0
-v_2, y_2 = v_1 + (dt / 2) * (- g - k * v_1 / m), y_1 + (dt / 2) * v_1
-v_3, y_3 = v_2 + dt * (- g - k * v_2 / m),       y_2 + dt * v_2
+def sub_step(last_state: Tuple[float, float], dt: float) -> Tuple[float, float]:
+    last_v, last_y = last_state
+
+    v1 = -g - (k / m) * last_v
+    v2 = -g - (k / m) * (last_v + (dt / 2))
+    v3 = -g - (k / m) * (last_v + (dt / 2))
+    v4 = -g - (k / m) * (last_v + dt)
+    v = last_v + (dt / 6) * (v1 + (2 * v2) + (2 * v3) + v4)
+
+    y1 = last_y
+    y2 = last_y + (v1 * dt / 2)
+    y3 = last_y + (v2 * dt / 2)
+    y4 = last_y + (v3 * dt)
+    y = last_y + ((dt / 6) * (y1 + (2 * y2) + (2 * y3) + y4))
+
+    return (v, y)
+
+
+v_1, y_1 = v_0 + (dt / 2) * (-g - k * v_0 / m), y_0 + (dt / 2) * v_0
+v_2, y_2 = v_1 + (dt / 2) * (-g - k * v_1 / m), y_1 + (dt / 2) * v_1
+v_3, y_3 = v_2 + dt * (-g - k * v_2 / m), y_2 + dt * v_2
 
 s_0 = (v_0, y_0)
 s_1 = (v_1, y_1)
@@ -124,86 +101,3 @@ for dt in [0.1, 0.01, 0.001, 0.0001]:
         + str(time)
         + "\n"
     )
-
-"""
-s0 = (v_0, y_0)
-s1 = sub_step(s0, dt)
-s2 = sub_step(s1, dt)
-s3 = sub_step(s2, dt)
-print(s0, s1, s2, s3)
-
-_s1 = getSubstep(s0, dt, 1)
-_s2 = getSubstep(_s1, dt, 1)
-_s3 = getSubstep(_s2, dt, 1)
-print(s0, _s1, _s2, _s3)
-"""
-""" s4 = next_state(s0, s1, s2, s3, dt)
-
-s0, s1, s2, s3 = s1, s2, s3, s4
-next_state(s0, s1, s2, s3, dt)
-
-state = getNextState((v_0, y_0), dt)
-getNextState(state, dt) """
-""" 
-print("===================================================================")
-for dt in [0.1]:
-    ymax = y_0
-    maxHeightTime = 0
-    time = 0
-    iter = 0
-    v = v_0
-    y = y_0
-    s0 = (v_0, y_0)
-    s1 = sub_step(s0, dt)
-    s2 = sub_step(s1, dt)
-    s3 = sub_step(s2, dt)
-    while y > 0:
-        iter += 1
-        s4 = next_state(s0, s1, s2, s3, dt)
-        s0, s1, s2, s3 = s1, s2, s3, s4
-        v, y = s4
-        if y > ymax:
-            ymax = y
-            maxHeightTime = t_0 + dt * iter
-        if y <= 0:
-            time += dt * iter
-    print(
-        "ymax:                \t"
-        + str(ymax)
-        + "\nTempo até ymax: \t"
-        + str(maxHeightTime)
-        + "\nVelocidade no Impacto: \t"
-        + str(v)
-        + "\nTempo até o Impacto: \t"
-        + str(time)
-        + "\n"
-    )
-
-print("===================================================================")
-for dt in [0.1]:
-    ymax = y_0
-    maxHeightTime = 0
-    time = 0
-    y = y_0
-    v = v_0
-    iter = 0
-    while y > 0:
-        iter += 1
-        v, y = getNextState((v, y), dt)
-        if y > ymax:
-            ymax = y
-            maxHeightTime = t_0 + dt * iter
-        if y <= 0:
-            time += dt * iter
-    print(
-        "ymax:                \t"
-        + str(ymax)
-        + "\nTempo até ymax: \t"
-        + str(maxHeightTime)
-        + "\nVelocidade no Impacto: \t"
-        + str(v)
-        + "\nTempo até o Impacto: \t"
-        + str(time)
-        + "\n"
-    )
-"""
