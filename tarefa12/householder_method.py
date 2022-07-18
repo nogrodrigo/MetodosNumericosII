@@ -16,15 +16,15 @@ def householder_mat(A: NDArray, i: int) -> NDArray:
 
     # Copiar os elementos abaixo da diagonal da coluna i da matriz A
     # para as respectivas posições no vetor w, isto é, da posição i+1 até o final.
-    w[i+1:size] = A[i+1:size, i]
+    w[i + 1 : size] = A[i + 1 : size, i]
     # Calcular o comprimento do vetor w.
-    l_w = sum(list(map(lambda x: x * x, w)))**0.5
+    l_w = sum(list(map(lambda x: x * x, w))) ** 0.5
     # Copiar l_w na posição i+1 do vetor w′
-    w_l[i+1] = l_w
+    w_l[i + 1] = l_w
     # Calcular o vetor N
     N = w - w_l
     # Normalizar o vetor N
-    n_mod = sum(list(map(lambda x: x * x, N)))**0.5
+    n_mod = sum(list(map(lambda x: x * x, N))) ** 0.5
     n = N / n_mod
     # n transposto
     n_t = np.array([n]).transpose()
@@ -33,11 +33,12 @@ def householder_mat(A: NDArray, i: int) -> NDArray:
 
     return H
 
+
 def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
     n = len(A)
     H = np.identity(n)
     A_prev = A.copy()
-    for i in range(n-2):
+    for i in range(n - 2):
         # Construção da matriz de Householder do passo i.
         H_i = householder_mat(A_prev, i)
         # Transformação de similaridade do passo i.
@@ -51,20 +52,27 @@ def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
 
 
 A1 = np.array(
-    [[40, 8, 4, 2, 1],
-     [8, 30, 12, 6, 2],
-     [4, 12, 20, 1, 2],
-     [2, 6, 1, 25, 4],
-     [1, 2, 2, 4, 5]])
+    [
+        [40, 8, 4, 2, 1],
+        [8, 30, 12, 6, 2],
+        [4, 12, 20, 1, 2],
+        [2, 6, 1, 25, 4],
+        [1, 2, 2, 4, 5],
+    ]
+)
 
 # Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.
-print("Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H.")
+print(
+    "Implemente o método de Householder e aplique-o sobre A para encontrar a matriz tridiagonal e a matriz acumulada H."
+)
 A_bar, H = householder_method(A1)
 print_mat(A_bar.tolist(), "A barra: ")
 print_mat(H.tolist(), "H: ")
 
 # Use os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.
-print("\nUse os métodos da potência para encontrar os autovalores e autovetores da matriz A barra.")
+print(
+    "\nUse os métodos da potência para encontrar os autovalores e autovetores da matriz A barra."
+)
 eigenvalue_1, eigenvector_1 = power_method(A_bar.tolist(), [1.0] * 5, 1e-10)
 eigenvalue_2, eigenvector_2 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 33)
 eigenvalue_3, eigenvector_3 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 20)
@@ -82,7 +90,9 @@ print_vec(eigenvector_3, "Autovetor 3 de A barra:")
 print_vec(eigenvector_4, "Autovetor 4 de A barra:")
 print_vec(eigenvector_5, "Autovetor 5 de A barra:")
 # Usando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.
-print("\nUsando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.")
+print(
+    "\nUsando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A."
+)
 print_vec((np.array(eigenvector_1).transpose() @ H).tolist(), "Autovetor 1 de A: ")
 print_vec((np.array(eigenvector_2).transpose() @ H).tolist(), "Autovetor 2 de A: ")
 print_vec((np.array(eigenvector_3).transpose() @ H).tolist(), "Autovetor 3 de A: ")
