@@ -32,7 +32,7 @@ def next_state(s1, s2, s3, s4, dt: float):
 
     # Predição
     v5 = v4 + ((dt / 24) * ((55 * _v4) - (59 * _v3) + (37 * _v2) - (9 * _v1)))
-    y5 = y4 + ((dt / 24) * ((55 * _y4) - (59 * _y3) + (37 * _y2) - (9 * _y1)))
+    # y5 = y4 + ((dt / 24) * ((55 * _y4) - (59 * _y3) + (37 * _y2) - (9 * _y1)))
 
     _v5 = -g - (k / m) * v5
     _y5 = v5
@@ -62,6 +62,7 @@ def sub_step(last_state: Tuple[float, float], dt: float) -> Tuple[float, float]:
     return (v, y)
 
 
+# Runge-Kutta
 v_1, y_1 = v_0 + (dt / 2) * (-g - k * v_0 / m), y_0 + (dt / 2) * v_0
 v_2, y_2 = v_1 + (dt / 2) * (-g - k * v_1 / m), y_1 + (dt / 2) * v_1
 v_3, y_3 = v_2 + dt * (-g - k * v_2 / m), y_2 + dt * v_2

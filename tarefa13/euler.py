@@ -8,17 +8,24 @@ k = 0.25
 m = 2
 g = 10
 
-def getNextStateExplicit(pastState: Tuple[float, float], dt: float) -> Tuple[float,float]:
+
+def getNextStateExplicit(
+    pastState: Tuple[float, float], dt: float
+) -> Tuple[float, float]:
     vPast, yPast = pastState
     v = vPast + dt * (-g - k * vPast / m)
     y = yPast + dt * vPast
     return v, y
 
-def getNextStateImplicit(pastState: Tuple[float, float], dt: float) -> Tuple[float, float]:
+
+def getNextStateImplicit(
+    pastState: Tuple[float, float], dt: float
+) -> Tuple[float, float]:
     vPast, yPast = pastState
     v = m * (vPast - g * dt) / (m + k * dt)
     y = yPast + m * dt * (vPast - g * dt) / (m + k * dt)
     return v, y
+
 
 # Explícito
 print("Euler Explícito:")
@@ -37,7 +44,17 @@ for dt in [0.1, 0.01, 0.001, 0.0001]:
             maxHeightTime = t_0 + dt * iter
         if y <= 0:
             time += dt * iter
-    print("ymax:                \t"+str(ymax)+"\nTempo até ymax: \t"+str(maxHeightTime)+"\nVelocidade no Impacto: \t"+str(v)+"\nTempo até o Impacto: \t"+str(time)+"\n")
+    print(
+        "ymax:                \t"
+        + str(ymax)
+        + "\nTempo até ymax: \t"
+        + str(maxHeightTime)
+        + "\nVelocidade no Impacto: \t"
+        + str(v)
+        + "\nTempo até o Impacto: \t"
+        + str(time)
+        + "\n"
+    )
 
 # Implícito
 print("Euler Implícito:")
@@ -56,4 +73,14 @@ for dt in [0.1, 0.01, 0.001, 0.0001]:
             maxHeightTime = t_0 + dt * iter
         if y <= 0:
             time += dt * iter
-    print("ymax:                \t"+str(ymax)+"\nTempo até ymax: \t"+str(maxHeightTime)+"\nVelocidade no Impacto: \t"+str(v)+"\nTempo até o Impacto: \t"+str(time)+"\n")
+    print(
+        "ymax:                \t"
+        + str(ymax)
+        + "\nTempo até ymax: \t"
+        + str(maxHeightTime)
+        + "\nVelocidade no Impacto: \t"
+        + str(v)
+        + "\nTempo até o Impacto: \t"
+        + str(time)
+        + "\n"
+    )
