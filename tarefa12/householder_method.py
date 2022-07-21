@@ -53,8 +53,8 @@ def householder_method(A: NDArray) -> Tuple[NDArray, NDArray]:
 
 A1 = np.array(
     [
-        [40, 8, 4, 2, 1],
-        [8, 30, 12, 6, 2],
+        [-40, 8, 4, 2, 1],
+        [8, -30, 12, 6, 2],
         [4, 12, 20, 1, 2],
         [2, 6, 1, 25, 4],
         [1, 2, 2, 4, 5],
@@ -74,9 +74,9 @@ print(
     "\nUse os métodos da potência para encontrar os autovalores e autovetores da matriz A barra."
 )
 eigenvalue_1, eigenvector_1 = power_method(A_bar.tolist(), [1.0] * 5, 1e-10)
-eigenvalue_2, eigenvector_2 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 33)
-eigenvalue_3, eigenvector_3 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 20)
-eigenvalue_4, eigenvector_4 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 10)
+eigenvalue_2, eigenvector_2 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, -20)
+eigenvalue_3, eigenvector_3 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 30)
+eigenvalue_4, eigenvector_4 = power_method_shiff(A_bar.tolist(), [1.0] * 5, 1e-10, 20)
 eigenvalue_5, eigenvector_5 = power_method_inv(A_bar.tolist(), [1.0] * 5, 1e-10)
 
 print(f"Autovalor 1 de A barra: {eigenvalue_1}")
@@ -91,7 +91,7 @@ print_vec(eigenvector_4, "Autovetor 4 de A barra:")
 print_vec(eigenvector_5, "Autovetor 5 de A barra:")
 # Usando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A.
 print(
-    "\nUsando a matriz H e os autovetores da matriz A barra encontre os autovetores da matriz A."
+    "\nUsando a matri H e os autovetores da matriz A barra encontre os autovetores da matriz A."
 )
 print_vec((np.array(eigenvector_1).transpose() @ H).tolist(), "Autovetor 1 de A: ")
 print_vec((np.array(eigenvector_2).transpose() @ H).tolist(), "Autovetor 2 de A: ")

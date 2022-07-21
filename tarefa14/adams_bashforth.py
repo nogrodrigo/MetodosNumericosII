@@ -8,7 +8,7 @@ from typing import Tuple
 t_0 = 0
 v_0 = 5
 y_0 = 200
-k = 0.25
+k = 0.8
 m = 2
 g = 10
 dt = 0.1
@@ -72,7 +72,7 @@ s_1 = (v_1, y_1)
 s_2 = (v_2, y_2)
 s_3 = (v_3, y_3)
 
-for dt in [0.1, 0.01, 0.001, 0.0001]:
+for dt in [0.0001]:
 
     ymax = y_0
     maxHeightTime = 0

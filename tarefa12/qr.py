@@ -17,7 +17,7 @@ def QR_method(
         Q, R = QR(A_old)
         print_mat(Q.tolist(), f"Matriz Q na iteração {i}: ")
         print_mat(R.tolist(), f"Matriz R na iteração {i}: ")
-        A_new = R @ Q
+        A_new = R @ Q  # transformação de similaridade
         A_old = A_new
         if flag:
             print_mat(A_new.tolist(), f"Matriz A_new na iteração {i}: ")
@@ -26,12 +26,12 @@ def QR_method(
         i += 1
 
     lamb = np.array([A_new[i, i] for i in range(len(A_new))])
-    
+
     # Colocando na forma "padrão" (último elemento = 1)
     for i in range(len(A_new)):
         for j in range(len(A_new)):
-            phi[i,j] /= phi[len(A_new)-1, j]
-    
+            phi[i, j] /= phi[len(A_new) - 1, j]
+
     return (phi, lamb)
 
 
@@ -93,8 +93,8 @@ def householder_hj(A: NDArray, j: int) -> NDArray:
 
 A = np.array(
     [
-        [40, 8, 4, 2, 1],
-        [8, 30, 12, 6, 2],
+        [-40, 8, 4, 2, 1],
+        [8, -30, 12, 6, 2],
         [4, 12, 20, 1, 2],
         [2, 6, 1, 25, 4],
         [1, 2, 2, 4, 5],
@@ -117,12 +117,12 @@ print(f"\nAutovalor 5: {lamb[4]}")
 print_vec(phi[0 : len(A), 4].tolist(), "\nAutovetor 5:")
 
 # 2)
-print()
+""" print()
 A_bar, H = householder_method(A)
 phi, lamb = QR_method(A_bar, 1e-6, True)
 print_mat(phi.tolist(), "\n\nPhi: ")
 phi = H @ phi
 for i in range(len(phi)):
-        for j in range(len(phi)):
-            phi[i,j] /= phi[len(phi)-1, j]
-print_mat(phi.tolist(), "\n\nH * Phi: ")
+    for j in range(len(phi)):
+        phi[i, j] /= phi[len(phi) - 1, j]
+print_mat(phi.tolist(), "\n\nH * Phi: ") """

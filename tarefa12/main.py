@@ -39,9 +39,9 @@ print("μ: 1.0")
 print(f"Autovalor: {eigenvalue}\nAutovetor: {eigenvector}\n\n")
 
 
-eigenvalue, eigenvector = power_method_shiff(A2, [1] * 3, 1e-10, 5.0)
+eigenvalue, eigenvector = power_method_shiff(A2, [1] * 3, 1e-10, -5.0)
 print_mat(A2, label="Matriz A2:")
-print("μ: 5.0")
+print("μ: -5.0")
 print(f"Autovalor: {eigenvalue}\nAutovetor: {eigenvector}\n\n")  # resolver
 
 eigenvalue, eigenvector = power_method_shiff(A3, [1] * 5, 1e-10, 3.0)

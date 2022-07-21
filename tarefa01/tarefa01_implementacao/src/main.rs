@@ -18,7 +18,7 @@ use ppm_reader::PPMReader;
 use std::sync::{Arc, Mutex};
 
 fn main() -> Result<(), std::io::Error> {
-    let image_name = "925_540";
+    let image_name = "3840_2160";
 
     println!("Lendo arquivo: ");
     let file_content = utils::read_file(format!("./src/imgs/{}.ppm", image_name).as_str())?;

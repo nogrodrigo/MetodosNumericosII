@@ -5,7 +5,7 @@ from webbrowser import get
 t_0 = 0
 v_0 = 5
 y_0 = 200
-k = 0.25
+k = 0.8
 m = 2
 g = 10
 
@@ -32,7 +32,7 @@ def getNextState(pastState: Tuple[float, float], dt: float) -> Tuple[float, floa
     return (v, y)
 
 
-for dt in [0.1, 0.01, 0.001, 0.0001]:
+for dt in [0.0001]:
     ymax = y_0
     maxHeightTime = 0
     time = 0

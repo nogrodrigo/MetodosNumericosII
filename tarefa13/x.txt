@@ -1,0 +1,10 @@
+ymax:                   201.2002420364252  
+Tempo até ymax:         0.48500000000000004
+Velocidade no Impacto:  -47.89774565405539 
+Tempo até o Impacto:    7.7898000000000005
+
+
+ymax:                   201.1049026972632
+Tempo até ymax:         0.45580000000000004
+Velocidade no Impacto:  -24.626143265267903
+Tempo até o Impacto:    10.962
